@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace Approximation
 {
-
+    // ХАС МУ КАР
     public class Approximattion
     {
         private List<Point> points;
