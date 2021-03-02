@@ -25,10 +25,13 @@ namespace Test
             //Console.WriteLine("X = {0}; Y = {1}", point.X, point.Y);
 
             //List<Point> points1 = new List<Point>() { new Point(2, 3), new Point(3, 5), new Point(4, 2), new Point(1, 7), };
-            //List<Point> points1 = new List<Point>() { new Point(81, 183), new Point(71, 168), new Point(64, 171), new Point(69, 178), new Point(69, 176), new Point(64, 172), new Point(68, 165), new Point(59, 158), new Point(81, 183), new Point(91, 182), new Point(57, 163), new Point(65, 175), new Point(58, 164), new Point(62, 175) };
-            //Approximattion approximattion = new Approximattion(points1);
-            //approximattion.MethodOfMinimumRoots(5);
             //double[,] matrix = new double[5, 3] { { 2, 4, 6 }, { 3, 4, 7 }, { 5, 3, 4 }, { 2, 6, 2 }, { 4, 3, 1 } };
+            //List<Point> points1 = new List<Point> { new Point(2, 5), new Point(3, 4), new Point(5, 3) };
+            List<Point> points1 = new List<Point> { new Point(3, 3), new Point(4, 5), new Point(2, 4) };
+            //List<Point> points1 = new List<Point>() { new Point(81, 183), new Point(71, 168), new Point(64, 171), new Point(69, 178), new Point(69, 176), new Point(64, 172), new Point(68, 165), new Point(59, 158), new Point(81, 183), new Point(91, 182), new Point(57, 163), new Point(65, 175), new Point(58, 164), new Point(62, 175) };
+            Approximattion approximattion = new Approximattion(points1);
+            approximattion.MethodOfMinimumRoots(3);
+            
 
             Console.WriteLine("X: {0}; Y:{1}", point.X, point.Y);
 

@@ -43,12 +43,15 @@ namespace Approximation
 
             Matrix argumentsMatrix = new Matrix(arguments);
             Matrix valuesMatrix = new Matrix(values);
-            //SystemEquations systemEquations = new SystemEquations(argumentsMatrix, valuesMatrix);
-            //coefficients = systemEquations.MatrixMethod();
+            SystemEquations systemEquations = new SystemEquations(argumentsMatrix, valuesMatrix);
+            coefficients = systemEquations.GaussMethod();
+            //Matrix temp = argumentsMatrix.GetTransporse();
+            //Matrix temp1 = temp * argumentsMatrix;
+            //Matrix temp2 = temp1.GetInverse();
+            //Matrix temp3 = temp2 * argumentsMatrix.GetTransporse();
+            //Matrix temp4 = temp3 * valuesMatrix;
 
-            Matrix temp = (argumentsMatrix.GetTransporse() * argumentsMatrix).GetInverse() * argumentsMatrix.GetTransporse() * valuesMatrix;
-            //temp = temp.GetTransporse();
-            
+
             double step = 0.1; 
             List<Point> result;
 
