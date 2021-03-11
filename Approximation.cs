@@ -40,20 +40,27 @@ namespace Approximation
                     values[i, j] = points[i].Y;
                 }
             }
+;
 
             Matrix argumentsMatrix = new Matrix(arguments);
             Matrix valuesMatrix = new Matrix(values);
-            SystemEquations systemEquations = new SystemEquations(argumentsMatrix, valuesMatrix);
-            coefficients = systemEquations.GaussMethod();
-            //Matrix temp = argumentsMatrix.GetTransporse();
-            //Matrix temp1 = temp * argumentsMatrix;
-            //Matrix temp2 = temp1.GetInverse();
-            //Matrix temp3 = temp2 * argumentsMatrix.GetTransporse();
-            //Matrix temp4 = temp3 * valuesMatrix;
 
+
+            //A=(Xt*X)^-1*Xt*Y
+
+            Matrix temp = argumentsMatrix.GetTransporse();
+            Matrix temp1 = temp * argumentsMatrix;
+            Matrix temp2 = temp1.GetInverse();
+
+            Matrix temp3 = temp2 * argumentsMatrix.GetTransporse();
+            Matrix temp4 = temp3 * valuesMatrix;
+
+
+            SystemEquations systemEquations = new SystemEquations(argumentsMatrix.GetTransporse() * argumentsMatrix, argumentsMatrix.GetTransporse() * valuesMatrix);
+            double[,] result = systemEquations.MatrixMethod();
 
             double step = 0.1; 
-            List<Point> result;
+            //List<Point> result;
 
 
             return points;
