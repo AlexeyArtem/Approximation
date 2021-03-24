@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:Approximation"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
@@ -26,7 +27,7 @@
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border BorderBrush="Gray" BorderThickness="0,0,2,0" >
+        <Border BorderBrush="Gray" BorderThickness="0,0,0,0" >
             <StackPanel Grid.Column="0" Orientation="Vertical">
                 <Label HorizontalAlignment="Center">Входные данные:</Label>
                 <ComboBox x:Name="CbSelectData" HorizontalAlignment="Center" SelectionChanged="ComboBox_SelectionChanged">
@@ -50,9 +51,6 @@
                     </GroupBox>
                     <GroupBox x:Name="GbData" Header="Аппроксимация данных" Style="{StaticResource ResourceKey=GroupBoxInterface}">
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-
-                            </StackPanel>
                             <Grid Margin="60, 0, 60, 0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition></ColumnDefinition>
@@ -63,13 +61,13 @@
                                     <RowDefinition></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">X:</Label>
-                                <TextBox Grid.Row="1" Grid.Column="0" Width="30" Height="25"></TextBox>
+                                <TextBox x:Name="TextBoxValueX" Grid.Row="1" Grid.Column="0" Width="30" Height="25"></TextBox>
                                 <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">Y:</Label>
-                                <TextBox Grid.Row="1" Grid.Column="1" Width="30" Height="25"></TextBox>
+                                <TextBox x:Name="TextBoxValueY" Grid.Row="1" Grid.Column="1" Width="30" Height="25"></TextBox>
                             </Grid>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 8, 0, 0">
-                                <Button HorizontalAlignment="Center" Width="70" Height="25" Margin="4">Добавить</Button>
-                                <Button HorizontalAlignment="Center" Width="70" Height="25" Margin="4">Удалить</Button>
+                                <Button x:Name="BtAddPoint" HorizontalAlignment="Center" Width="70" Height="25" Margin="4" Click="BtAddPoint_Click">Добавить</Button>
+                                <Button x:Name="BtDelPoint" HorizontalAlignment="Center" Width="70" Height="25" Margin="4" Click="BtDelPoint_Click">Удалить</Button>
                             </StackPanel>
                             <ListView x:Name="ListData" Height="100" Margin="10, 7, 10, 0"></ListView>
                             <Label HorizontalAlignment="Center">Выбор метода:</Label>
@@ -84,8 +82,9 @@
                         </StackPanel>
                     </GroupBox>
                 </Grid>
-                <Button x:Name="BtStartApproximation" HorizontalAlignment="Center" Width="170" Height="25" Click="Button_Click">Аппроксимировать</Button>
+                <Button x:Name="BtStartApproximation" HorizontalAlignment="Center" Width="170" Height="25" Click="BtStartApproximation_Click">Аппроксимировать</Button>
             </StackPanel>
         </Border>
+        <lvc:CartesianChart x:Name="Chart" Grid.Column="1"></lvc:CartesianChart>
     </Grid>
 </Window>

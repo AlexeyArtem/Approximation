@@ -117,6 +117,7 @@ namespace Approximation
 
             return new Point(x, p);
         }
+
         private double CalcFinalDiff(int n, int i)
         {
             double diff;
