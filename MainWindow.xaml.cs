@@ -23,6 +23,32 @@ namespace Approximation
         public MainWindow()
         {
             InitializeComponent();
+            CbSelectData.SelectedIndex = 0;
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbSelectData.SelectedIndex == 0)
+            {
+                GbData.Visibility = Visibility.Hidden;
+                GbData.IsEnabled = false;
+
+                GbFunction.Visibility = Visibility.Visible;
+                GbFunction.IsEnabled = true;
+            }
+            else if (CbSelectData.SelectedIndex == 1) 
+            {
+                GbFunction.Visibility = Visibility.Hidden;
+                GbFunction.IsEnabled = false;
+
+                GbData.Visibility = Visibility.Visible;
+                GbData.IsEnabled = true;
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
