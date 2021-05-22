@@ -38,15 +38,15 @@
                     <GroupBox x:Name="GbFunction" Header="Аппроксимация функции" Style="{StaticResource ResourceKey=GroupBoxInterface}">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                             <Label HorizontalAlignment="Center">Ввод функции:</Label>
-                            <TextBox Margin="0, 0, 0, 15" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>
+                            <TextBox x:Name="TbFunction" Margin="0, 0, 0, 15" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>
                             <Label HorizontalAlignment="Center">Выбор метода:</Label>
-                            <ComboBox Margin="0, 0, 0, 15" HorizontalAlignment="Center" SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}">
+                            <ComboBox x:Name="CbApproximationMethod" Margin="0, 0, 0, 15" HorizontalAlignment="Center" SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}">
                                 <ComboBoxItem>Полином Чебышева</ComboBoxItem>
                                 <ComboBoxItem>Ряды Фурье</ComboBoxItem>
                                 <ComboBoxItem>Ряды Тейлора</ComboBoxItem>
                             </ComboBox>
                             <Label HorizontalAlignment="Center">Ввод степени:</Label>
-                            <TextBox Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>
+                            <TextBox x:Name="TbDegreeMethod" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox x:Name="GbData" Header="Аппроксимация данных" Style="{StaticResource ResourceKey=GroupBoxInterface}">

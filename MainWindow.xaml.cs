@@ -81,12 +81,40 @@ namespace Approximation
             //Аппроксимация функции
             if (CbSelectData.SelectedIndex == 0)
             {
+                ApproximationFunction approximation = new ApproximationFunction(TbFunction.Text);
+                List<Point> result = new List<Point>();
+                try
+                {
+                    lineSeries.Values.Clear();
 
+                    switch (CbApproximationMethod.SelectedIndex)
+                    {
+                        case 0:
+                            result = approximation.ChebyshevPolynomial(TbFunction.Text, 4);
+                            break;
+                            //case 1:
+                            //    result = interpolation.QuadraticMethod(0.01);
+                            //    break;
+                            //case 3:
+                            //    result = interpolation.LagrangePolynomial(0.01);
+                            //    break;
+                            //case 4:
+                            //    result = interpolation.NewtonPolynomial(0.01);
+                            //    break;
+                    }
+
+                    foreach (Point point in result)
+                        lineSeries.Values.Add(new ObservablePoint(point.X, point.Y));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             //Аппроксимация данных
-            else 
+            else
             {
-                if (points.Count != 0) 
+                if (points.Count != 0)
                 {
                     lineSeries.Values.Clear();
                     scatterSeries.Values.Clear();
@@ -116,7 +144,7 @@ namespace Approximation
                         foreach (Point point in points)
                             scatterSeries.Values.Add(new ObservablePoint(point.X, point.Y));
                     }
-                    catch (Exception ex) 
+                    catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
