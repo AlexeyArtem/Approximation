@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 
 namespace Approximation
@@ -25,24 +26,32 @@ namespace Approximation
     {
         SeriesCollection series;
         ObservableCollection<Point> points;
+        LineSeries lineSeries;
+        ScatterSeries scatterSeries;
 
         public MainWindow()
         {
             InitializeComponent();
-            points = new ObservableCollection<Point>();
+            points = new ObservableCollection<Point>()
+            {
+                new Point(1, 1.2),
+                new Point(2, 1),
+                new Point(3, 2),
+                new Point(4, 1.5),
+                new Point(5, 2),
+                new Point(6, 1.5),
+                new Point(7, 2),
+                new Point(8, 2.2),
+
+            };
             series = new SeriesCollection();
+            lineSeries = new LineSeries { Values = new ChartValues<ObservablePoint>(), PointGeometrySize = 0 /*Title = "f(x)"*/, LineSmoothness = 0 };
+            scatterSeries = new ScatterSeries { Values = new ChartValues<ObservablePoint>(), Title = "Узел интерполяции", MinPointShapeDiameter = 7, MaxPointShapeDiameter = 20 };
+            series.Add(lineSeries);
+            series.Add(scatterSeries);
 
             ListData.ItemsSource = points;
             Chart.Series = series;
-
-            //series = new SeriesCollection()
-            //{
-            //    new LineSeries { Values = new ChartValues<double> { 3, 5, 7, 4 } },
-            //    new ColumnSeries { Values = new ChartValues<decimal> { 5, 6, 2, 7 } }
-            //};
-
-            //Chart.Series = series;
-            //series.Add(new ColumnSeries { Values = new ChartValues<decimal> { 5, 6, 2, 7 } });
 
             CbSelectData.SelectedIndex = 1;
         }
@@ -79,22 +88,38 @@ namespace Approximation
             {
                 if (points.Count != 0) 
                 {
-                    LineSeries line = new LineSeries();
-                    line.Values = new ChartValues<LiveCharts.Defaults.ObservablePoint>();
+                    lineSeries.Values.Clear();
+                    scatterSeries.Values.Clear();
+                    Interpolation interpolation = new Interpolation(points.ToList());
+                    List<Point> resPoints = new List<Point>();
 
-                    Interpolation interpolation = new Interpolation(points.ToList<Point>());
-                    for (int i = 0; i < points.Count; i++)
+                    try
                     {
-                        int k = 0;
-                        int n = i;
-                        if (i != 0) k = i - 1;
-                        else n = i + 1;
+                        switch (CbInterpolationMethod.SelectedIndex)
+                        {
+                            case 0:
+                                resPoints = interpolation.LinearMethod(0.01);
+                                break;
+                            case 1:
+                                resPoints = interpolation.QuadraticMethod(0.01);
+                                break;
+                            case 3:
+                                resPoints = interpolation.LagrangePolynomial(0.01);
+                                break;
+                            case 4:
+                                resPoints = interpolation.NewtonPolynomial(0.01);
+                                break;
+                        }
 
-                        Point point = interpolation.LinearMethod(points[i].X, k, n);
-                        line.Values.Add(new LiveCharts.Defaults.ObservablePoint(point.X, point.Y));
+                        foreach (Point point in resPoints)
+                            lineSeries.Values.Add(new ObservablePoint(point.X, point.Y));
+                        foreach (Point point in points)
+                            scatterSeries.Values.Add(new ObservablePoint(point.X, point.Y));
                     }
-
-                    series.Add(line);
+                    catch (Exception ex) 
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 else MessageBox.Show("Заполните список точек", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
             }

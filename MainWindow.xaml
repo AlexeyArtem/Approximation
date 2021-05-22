@@ -32,7 +32,7 @@
                 <Label HorizontalAlignment="Center">Входные данные:</Label>
                 <ComboBox x:Name="CbSelectData" HorizontalAlignment="Center" SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBoxItem>Функция</ComboBoxItem>
-                    <ComboBoxItem>Данные</ComboBoxItem>
+                    <ComboBoxItem>Координаты</ComboBoxItem>
                 </ComboBox>
                 <Grid>
                     <GroupBox x:Name="GbFunction" Header="Аппроксимация функции" Style="{StaticResource ResourceKey=GroupBoxInterface}">
@@ -71,7 +71,7 @@
                             </StackPanel>
                             <ListView x:Name="ListData" Height="100" Margin="10, 7, 10, 0"></ListView>
                             <Label HorizontalAlignment="Center">Выбор метода:</Label>
-                            <ComboBox SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}">
+                            <ComboBox x:Name="CbInterpolationMethod" SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}">
                                 <ComboBoxItem>Линейная интерполяция</ComboBoxItem>
                                 <ComboBoxItem>Квадратичная интерполяция</ComboBoxItem>
                                 <ComboBoxItem>Кубический сплайн</ComboBoxItem>
