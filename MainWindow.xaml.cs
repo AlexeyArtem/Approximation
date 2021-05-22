@@ -25,12 +25,14 @@ namespace Approximation
     {
         SeriesCollection series;
         ObservableCollection<Point> points;
+        
 
         public MainWindow()
         {
             InitializeComponent();
             points = new ObservableCollection<Point>();
             series = new SeriesCollection();
+            
 
             ListData.ItemsSource = points;
             Chart.Series = series;
@@ -80,7 +82,10 @@ namespace Approximation
                 if (points.Count != 0) 
                 {
                     LineSeries line = new LineSeries();
+                    line.LineSmoothness = 0;
                     line.Values = new ChartValues<LiveCharts.Defaults.ObservablePoint>();
+
+                    
 
                     Interpolation interpolation = new Interpolation(points.ToList<Point>());
                     for (int i = 0; i < points.Count; i++)
@@ -92,6 +97,7 @@ namespace Approximation
 
                         Point point = interpolation.LinearMethod(points[i].X, k, n);
                         line.Values.Add(new LiveCharts.Defaults.ObservablePoint(point.X, point.Y));
+
                     }
 
                     series.Add(line);

@@ -33,32 +33,52 @@ namespace Approximation
             return new Point(x, y);
         }
 
-        public Point QuadraticMethod(double x, int numPoint1, int numPoint2)
+        public List<Point> QuadraticMethod(double h)
         {
             if (points.Count < 3) throw new Exception("Количество точек в заданном интервале недостаточно.");
-            CheckCondition(x, numPoint1, numPoint2);
+            List<Point> resultPoints = new List<Point>();
 
-            double[,] valuesA = new double[3, 3] { { Math.Pow(points[numPoint1].X, 2), points[numPoint1].X, 1 },
-                                                   { Math.Pow(points[numPoint2].X, 2), points[numPoint2].X, 1 },
-                                                   { Math.Pow(points[numPoint2 + 1].X, 2), points[numPoint2 + 1].X, 1 } };
+            for (int k = 0; k < points.Count - 2; k++)
+            {
+                double[,] valuesA = new double[3, 3];
+                double[,] valuesB = new double[3, 1];
 
-            double[,] valuesB = new double[3, 1] { { points[numPoint1].Y },
-                                                   { points[numPoint2].Y },
-                                                   { points[numPoint2 + 1].Y } };
+                for (int i = 0; i < valuesA.GetLength(0); i++)
+                {
+                    for (int j = 0; j < valuesA.GetLength(1); j++)
+                    {
+                        valuesA[i, j] = Math.Pow(points[k + i].X, 2 - j);
+                    }
+                    valuesB[i, 0] = points[k + i].Y;
+                }
+                Matrix A = new Matrix(valuesA);
+                Matrix B = new Matrix(valuesB);
 
-            Matrix A = new Matrix(valuesA);
-            Matrix B = new Matrix(valuesB);
+                SystemEquations systemEquations = new SystemEquations(A, B);
+                double[,] solution = systemEquations.MatrixMethod();
 
-            SystemEquations systemEquations = new SystemEquations(A, B);
-            double[,] solution = systemEquations.MatrixMethod();
+                double a, b, c;
+                a = solution[0, 0];
+                b = solution[1, 0];
+                c = solution[2, 0];
 
-            double a, b, c;
-            a = solution[0, 0];
-            b = solution[1, 0];
-            c = solution[2, 0];
-
-            double y = a * Math.Pow(x, 2) + b * x + c;
-            return new Point(x, y);
+                if (k == 0)
+                {
+                    for (double x = points[0].X; x < points[1].X; x += h)
+                    {
+                        double newX = x;
+                        double newY = a * Math.Pow(newX, 2) + b * newX + c;
+                        resultPoints.Add(new Point(newX, newY));
+                    }
+                }
+                for (double x = points[k + 1].X; x <= points[k + 2].X; x += h)
+                {
+                    double newX = x;
+                    double newY = a * Math.Pow(newX, 2) + b * newX + c;
+                    resultPoints.Add(new Point(newX, newY));
+                }
+            }
+            return resultPoints;
         }
 
         public Point LagrangePolynomial(double x)

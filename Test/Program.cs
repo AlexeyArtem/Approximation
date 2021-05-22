@@ -29,7 +29,7 @@ namespace Test
             List<Point> points1 = new List<Point> { new Point(3, 3), new Point(4, 5), new Point(2, 4)};
 
             Approximattion approximattion = new Approximattion(points1);
-            approximattion.MethodOfMinimumRoots(3);
+            approximattion.MethodOfMinimumRoots(2, 0.01);
             
             Console.Read();
         }
