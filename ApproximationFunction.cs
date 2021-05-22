@@ -145,25 +145,39 @@ namespace Approximation
         private double GetCi(double x, int i, int n, double a, double b)
         {
             double c = 0;
-
+            double xk, tk, ti, funcValue;
             for (int k = 0; k < n-1; k++)
             {
-                c += GetFunctionValue(GetTk(GetXk(k, n), a, b)) * GetTi(GetXk(k, n), i);
+                xk = GetXk(k, n);
+                tk = GetTk(xk, a, b);
+                ti = GetTi(xk, i);
+                funcValue = GetFunctionValue(tk);
+                c += funcValue * ti;
             }
-            c *= 2 / n;
+
+            // 1 косяк
+            c *= 2 / (double)n;
 
             return c;
         }
 
         private double GetTn(double x, int n)
         {
-            return 1 / 2 * (Math.Pow(x + Math.Sqrt(x * x - 1), n) + Math.Pow(x - Math.Sqrt(x * x - 1), n));
+
+            double sum1 = Math.Pow(x + Math.Sqrt(x * x - 1), n);
+            double sum2 = Math.Pow(x - Math.Sqrt(x * x - 1), n);
+            double sum = sum1 + sum2;
+
+            // 2 косяк 1/2 было равно 0
+            double res = 0.5 * sum;
+            return res;
         }
 
         public List<Point> ChebyshevPolynomial(int degree, double a, double b, double step) 
         {
             if (b < a) throw new Exception("Конечная граница должна быть больше начальной");
             if (degree <= 0) throw new Exception("Степень должна быть больше нуля");
+            // 3 косяк левая граница не может быть 0, тк корень из отриц числа = NaN (в методе GetTn)
 
             List<double> valuesX = new List<double>();
             for (double i = a; i <= b; i += step)
@@ -173,9 +187,12 @@ namespace Approximation
             for (int i = 0; i < valuesX.Count; i++)
             {
                 double fx = 0;
+                double ci, tn;
                 for (int j = 0; j < degree - 1; j++)
                 {
-                    fx += GetCi(valuesX[i], j, degree, a, b) * GetTn(valuesX[i], j);
+                    ci = GetCi(valuesX[i], j, degree, a, b);
+                    tn = GetTn(valuesX[i], j);
+                    fx += ci * tn;
                 }
                 fx -= GetCi(valuesX[i], 0, degree, a, b) / 2;
                 resultPoints.Add(new Point(valuesX[i], fx));
