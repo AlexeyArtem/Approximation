@@ -90,7 +90,7 @@ namespace Approximation
                     switch (CbApproximationMethod.SelectedIndex)
                     {
                         case 0:
-                            result = approximation.ChebyshevPolynomial(TbFunction.Text, 4);
+                            result = approximation.ChebyshevPolynomial(4, 0, 10, 0.1);
                             break;
                             //case 1:
                             //    result = interpolation.QuadraticMethod(0.01);

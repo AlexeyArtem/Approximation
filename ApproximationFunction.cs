@@ -126,9 +126,10 @@ namespace Approximation
             return points;
         }
 
-        private double GetTi(double x, double i)
+        private double GetTi(double xK, double i)
         {
-            return Math.Cos(i * Math.Acos(x));
+            double res = Math.Cos(i * Math.Acos(xK));
+            return res;
         }
 
         private double GetXk(int k, int n)
@@ -136,20 +137,19 @@ namespace Approximation
             return Math.Cos((k + 0.5) / n * Math.PI);
         }
 
-        private double GetTk(double x, int k, int n)
+        private double GetTk(double xK, double a, double b)
         {
-            return (0 + 100) / 2 + (0 - 100) / 2 * GetXk(k, n);
+            return (b + a) / 2 + (b - a) / 2 * xK;
         }
 
-        private double GetCi(double x, int i, int n)
+        private double GetCi(double x, int i, int n, double a, double b)
         {
             double c = 0;
 
             for (int k = 0; k < n-1; k++)
             {
-                c += GetFunctionValue(GetTk(x, k, n)) * GetTi(GetXk(k, n), i);
+                c += GetFunctionValue(GetTk(GetXk(k, n), a, b)) * GetTi(GetXk(k, n), i);
             }
-
             c *= 2 / n;
 
             return c;
@@ -160,19 +160,25 @@ namespace Approximation
             return 1 / 2 * (Math.Pow(x + Math.Sqrt(x * x - 1), n) + Math.Pow(x - Math.Sqrt(x * x - 1), n));
         }
 
-        public List<Point> ChebyshevPolynomial(string function, int n) 
+        public List<Point> ChebyshevPolynomial(int degree, double a, double b, double step) 
         {
-            List<Point> resultPoints = new List<Point>();
+            if (b < a) throw new Exception("Конечная граница должна быть больше начальной");
+            if (degree <= 0) throw new Exception("Степень должна быть больше нуля");
 
-            for (double x = points[0].X; x <= points[points.Count - 1].X; x += 0.1)
+            List<double> valuesX = new List<double>();
+            for (double i = a; i <= b; i += step)
+                valuesX.Add(i);
+
+            List<Point> resultPoints = new List<Point>();
+            for (int i = 0; i < valuesX.Count; i++)
             {
                 double fx = 0;
-                for (int i = 0; i < n - 1; i++)
+                for (int j = 0; j < degree - 1; j++)
                 {
-                    fx += GetCi(x, i, n) * GetTn(x, i);
+                    fx += GetCi(valuesX[i], j, degree, a, b) * GetTn(valuesX[i], j);
                 }
-                fx -= GetCi(x, 0, n) / 2;
-                resultPoints.Add(new Point(x, fx));
+                fx -= GetCi(valuesX[i], 0, degree, a, b) / 2;
+                resultPoints.Add(new Point(valuesX[i], fx));
             }
 
             return resultPoints;
