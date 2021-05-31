@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMatrix", "TestMatrix\TestMatrix.csproj", "{69DCED39-A3EC-450A-A61B-CEEE697830CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumericalIntegration", "..\Integration\NumericalIntegration.csproj", "{4C8CA815-4D1D-45D7-900E-D4D35A996FBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionSystemNonlinearEquation", "..\..\..\3 курс 1 семестр\Численные методы\Решение СНУ\SolutionSystemNonlinearEquation\SolutionSystemNonlinearEquation.csproj", "{DF787C7E-9301-462F-8FAF-062CFF1FF497}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{69DCED39-A3EC-450A-A61B-CEEE697830CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69DCED39-A3EC-450A-A61B-CEEE697830CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69DCED39-A3EC-450A-A61B-CEEE697830CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C8CA815-4D1D-45D7-900E-D4D35A996FBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C8CA815-4D1D-45D7-900E-D4D35A996FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C8CA815-4D1D-45D7-900E-D4D35A996FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C8CA815-4D1D-45D7-900E-D4D35A996FBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF787C7E-9301-462F-8FAF-062CFF1FF497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF787C7E-9301-462F-8FAF-062CFF1FF497}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF787C7E-9301-462F-8FAF-062CFF1FF497}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF787C7E-9301-462F-8FAF-062CFF1FF497}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,21 +1,13 @@
-﻿using System;
+﻿using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using MathNet.Symbolics;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
 
 namespace Approximation
 {
@@ -26,7 +18,7 @@ namespace Approximation
     {
         SeriesCollection series;
         ObservableCollection<Point> points;
-        LineSeries lineSeries;
+        LineSeries approximationLine, functionLine;
         ScatterSeries scatterSeries;
 
         public MainWindow()
@@ -42,12 +34,13 @@ namespace Approximation
                 new Point(6, 1.5),
                 new Point(7, 2),
                 new Point(8, 2.2),
-
             };
             series = new SeriesCollection();
-            lineSeries = new LineSeries { Values = new ChartValues<ObservablePoint>(), PointGeometrySize = 0 /*Title = "f(x)"*/, LineSmoothness = 0 };
+            functionLine = new LineSeries { Values = new ChartValues<ObservablePoint>(), PointGeometrySize = 0, Title = "Исходная функция", LineSmoothness = 0 };
+            approximationLine = new LineSeries { Values = new ChartValues<ObservablePoint>(), PointGeometrySize = 0, Title = "Апроксимированная функция", LineSmoothness = 0 };
             scatterSeries = new ScatterSeries { Values = new ChartValues<ObservablePoint>(), Title = "Узел интерполяции", MinPointShapeDiameter = 7, MaxPointShapeDiameter = 20 };
-            series.Add(lineSeries);
+            series.Add(approximationLine);
+            series.Add(functionLine);
             series.Add(scatterSeries);
 
             ListData.ItemsSource = points;
@@ -62,9 +55,18 @@ namespace Approximation
             {
                 GbData.Visibility = Visibility.Hidden;
                 GbData.IsEnabled = false;
-
                 GbFunction.Visibility = Visibility.Visible;
                 GbFunction.IsEnabled = true;
+                if (CbApproximationMethod.SelectedIndex == 0 || CbApproximationMethod.SelectedIndex == 1)
+                {
+                    LbBorder.Visibility = GridBorder.Visibility = Visibility.Visible;
+                    LbArea.Visibility = UdArea.Visibility = LbAreaLimit.Visibility = UdAreaLimit.Visibility = Visibility.Hidden;
+                }
+                else if (CbApproximationMethod.SelectedIndex == 2)
+                {
+                    LbBorder.Visibility = GridBorder.Visibility = Visibility.Hidden;
+                    LbArea.Visibility = UdArea.Visibility = LbAreaLimit.Visibility = UdAreaLimit.Visibility = Visibility.Visible;
+                }
             }
             else if (CbSelectData.SelectedIndex == 1) 
             {
@@ -76,35 +78,57 @@ namespace Approximation
             }
         }
 
+        private List<Point> GetPoints(double leftBorder, double rightBorder, double step)
+        {
+            SymbolicExpression expression = SymbolicExpression.Parse(TbFunction.Text);
+            Dictionary<string, FloatingPoint> variable = new Dictionary<string, FloatingPoint>();
+            variable.Add("x", 0);
+
+            List<Point> points = new List<Point>();
+            decimal x = (decimal)leftBorder;
+            for (double i = leftBorder; i < (rightBorder - leftBorder) / step; i++)
+            {
+                variable["x"] = (double)x;
+                points.Add(new Point((double)x, expression.Evaluate(variable).RealValue));
+                x += (decimal)step;
+            }
+
+            return points;
+        }
         private void BtStartApproximation_Click(object sender, RoutedEventArgs e)
         {
             //Аппроксимация функции
             if (CbSelectData.SelectedIndex == 0)
             {
+                scatterSeries.Values.Clear();
+                approximationLine.Values.Clear();
+                functionLine.Values.Clear();
                 ApproximationFunction approximation = new ApproximationFunction(TbFunction.Text);
                 List<Point> result = new List<Point>();
+                List<Point> functionValues = new List<Point>();
                 try
                 {
-                    lineSeries.Values.Clear();
+                    approximationLine.Values.Clear();
 
                     switch (CbApproximationMethod.SelectedIndex)
                     {
                         case 0:
-                            result = approximation.ChebyshevPolynomial(5, 5, 15, 0.01);
+                            result = approximation.ChebyshevPolynomial(Convert.ToInt32(UdDegreeMethod.Value), Convert.ToDouble(TbLeftBorder.Text), Convert.ToDouble(TbRightBorder.Text), (double)UdStep.Value);
                             break;
-                            //case 1:
-                            //    result = interpolation.QuadraticMethod(0.01);
-                            //    break;
-                            //case 3:
-                            //    result = interpolation.LagrangePolynomial(0.01);
-                            //    break;
-                            //case 4:
-                            //    result = interpolation.NewtonPolynomial(0.01);
-                            //    break;
+                        case 1:
+                            result = approximation.FourierRows(TbFunction.Text, Convert.ToInt32(UdDegreeMethod.Value), Convert.ToDouble(TbLeftBorder.Text), Convert.ToDouble(TbRightBorder.Text), (double)UdStep.Value);
+                            functionValues = GetPoints(Convert.ToDouble(TbLeftBorder.Text), Convert.ToDouble(TbRightBorder.Text), (double)UdStep.Value);
+                            break;
+                        case 2:
+                            result = approximation.TaylorsRow(Convert.ToInt32(UdDegreeMethod.Value), (double)UdArea.Value, (double)UdAreaLimit.Value, (double)UdStep.Value);
+                            functionValues = GetPoints((double)UdArea.Value - (double)UdAreaLimit.Value, (double)UdArea.Value + (double)UdAreaLimit.Value, (double)UdStep.Value);
+                            break;
                     }
 
                     foreach (Point point in result)
-                        lineSeries.Values.Add(new ObservablePoint(point.X, point.Y));
+                        approximationLine.Values.Add(new ObservablePoint(point.X, point.Y));
+                    foreach (Point point in functionValues)
+                        functionLine.Values.Add(new ObservablePoint(point.X, point.Y));
                 }
                 catch (Exception ex)
                 {
@@ -116,8 +140,9 @@ namespace Approximation
             {
                 if (points.Count != 0)
                 {
-                    lineSeries.Values.Clear();
+                    approximationLine.Values.Clear();
                     scatterSeries.Values.Clear();
+                    functionLine.Values.Clear();
                     Interpolation interpolation = new Interpolation(points.ToList());
                     List<Point> resPoints = new List<Point>();
 
@@ -140,7 +165,7 @@ namespace Approximation
                         }
 
                         foreach (Point point in resPoints)
-                            lineSeries.Values.Add(new ObservablePoint(point.X, point.Y));
+                            approximationLine.Values.Add(new ObservablePoint(point.X, point.Y));
                         foreach (Point point in points)
                             scatterSeries.Values.Add(new ObservablePoint(point.X, point.Y));
                     }
@@ -163,6 +188,24 @@ namespace Approximation
             {
                 MessageBox.Show(ex.Message, "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        private void CbApproximationMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(CbSelectData.SelectedIndex == 0)
+            {
+                if (CbApproximationMethod.SelectedIndex == 0 || CbApproximationMethod.SelectedIndex == 1)
+                {
+                    LbBorder.Visibility = GridBorder.Visibility = Visibility.Visible;
+                    LbArea.Visibility = UdArea.Visibility = LbAreaLimit.Visibility = UdAreaLimit.Visibility = Visibility.Hidden;
+                }
+                else if (CbApproximationMethod.SelectedIndex == 2)
+                {
+                    LbBorder.Visibility = GridBorder.Visibility = Visibility.Hidden;
+                    LbArea.Visibility = UdArea.Visibility = LbAreaLimit.Visibility = UdAreaLimit.Visibility = Visibility.Visible;
+                }
+            }
+            
         }
 
         private void BtDelPoint_Click(object sender, RoutedEventArgs e)

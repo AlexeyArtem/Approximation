@@ -3,16 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:Approximation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="MainWindow" Height="550" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
         </Style>
         <Style x:Key="GroupBoxInterface">
-            <Setter Property="Control.Height" Value="300"></Setter>
+            <Setter Property="Control.Height" Value="390"></Setter>
             <Setter Property="Control.Margin" Value="10"></Setter>
         </Style>
         <Style x:Key="ControlApproximation">
@@ -32,24 +32,57 @@
                 <Label HorizontalAlignment="Center">Входные данные:</Label>
                 <ComboBox x:Name="CbSelectData" HorizontalAlignment="Center" SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBoxItem>Функция</ComboBoxItem>
-                    <ComboBoxItem>Координаты</ComboBoxItem>
+                    <ComboBoxItem>Точки</ComboBoxItem>
                 </ComboBox>
                 <Grid>
-                    <GroupBox x:Name="GbFunction" Header="Аппроксимация функции" Style="{StaticResource ResourceKey=GroupBoxInterface}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="132*"/>
+                        <ColumnDefinition Width="133*"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox x:Name="GbFunction" Header="Аппроксимация функции" Style="{StaticResource ResourceKey=GroupBoxInterface}" Grid.ColumnSpan="2" Margin="10,10,9.8,10.4">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <Label HorizontalAlignment="Center">Ввод функции:</Label>
+                            <Label HorizontalAlignment="Center">Функция:</Label>
                             <TextBox x:Name="TbFunction" Margin="0, 0, 0, 15" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>
                             <Label HorizontalAlignment="Center">Выбор метода:</Label>
-                            <ComboBox x:Name="CbApproximationMethod" Margin="0, 0, 0, 15" HorizontalAlignment="Center" SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}">
+                            <ComboBox x:Name="CbApproximationMethod" SelectionChanged="CbApproximationMethod_SelectionChanged"  Margin="31,0,31.8,15" SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}" Width="Auto">
                                 <ComboBoxItem>Полином Чебышева</ComboBoxItem>
                                 <ComboBoxItem>Ряды Фурье</ComboBoxItem>
                                 <ComboBoxItem>Ряды Тейлора</ComboBoxItem>
                             </ComboBox>
-                            <Label HorizontalAlignment="Center">Ввод степени:</Label>
-                            <TextBox x:Name="TbDegreeMethod" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>
+                            <Label HorizontalAlignment="Center">Степень метода:</Label>
+                            <xctk:IntegerUpDown x:Name="UdDegreeMethod" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:IntegerUpDown>
+                            <Label HorizontalAlignment="Center">Шаг по оси Х:</Label>
+                            <xctk:DoubleUpDown x:Name="UdStep" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
+                            <Grid>
+                                <StackPanel Grid.Row="0">
+                                    <Label x:Name="LbBorder" HorizontalAlignment="Center">Область посторения:</Label>
+                                    <Grid x:Name="GridBorder" Margin="60, 0, 60, 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">X0:</Label>
+                                        <TextBox x:Name="TbLeftBorder" Grid.Row="1" Grid.Column="0" Width="30" Height="25"></TextBox>
+                                        <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">X1:</Label>
+                                        <TextBox x:Name="TbRightBorder" Grid.Row="1" Grid.Column="1" Width="30" Height="25"></TextBox>
+                                    </Grid>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0">
+                                    <Label x:Name="LbArea" HorizontalAlignment="Center">Окрестность:</Label>
+                                    <xctk:DoubleUpDown x:Name="UdArea" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
+                                    <Label x:Name="LbAreaLimit" HorizontalAlignment="Center">Отклонение от окрестности:</Label>
+                                    <xctk:DoubleUpDown x:Name="UdAreaLimit" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
+                                </StackPanel>
+                            </Grid>
+
+                            <!--<TextBox x:Name="TbDegreeMethod" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>-->
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox x:Name="GbData" Header="Аппроксимация данных" Style="{StaticResource ResourceKey=GroupBoxInterface}">
+                    <GroupBox x:Name="GbData" Header="Аппроксимация данных" Style="{StaticResource ResourceKey=GroupBoxInterface}" Grid.ColumnSpan="2" Margin="10,10,9.8,10.4">
                         <StackPanel Orientation="Vertical">
                             <Grid Margin="60, 0, 60, 0">
                                 <Grid.ColumnDefinitions>
