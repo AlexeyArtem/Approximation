@@ -1,10 +1,7 @@
-﻿using System;
+﻿using NumericalMethods;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using NumericalMethods;
 
 
 namespace Approximation
@@ -150,8 +147,6 @@ namespace Approximation
                         lx *= (x - points[j].X) / (points[i].X - points[j].X);
                     }
                     Lx += points[i].Y * lx;
-
-                    //if (x < points[i].X && x + h > points[i].X) resultPoints.Add(points[i]); //Добавление узлов интерполяции в результирующий набор точек
                 }
                 resultPoints.Add(new Point(x, Lx));
             }

@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:Approximation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="Аппроксимация" Height="550" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
@@ -104,7 +104,7 @@
                             </StackPanel>
                             <ListView x:Name="ListData" Height="100" Margin="10, 7, 10, 0"></ListView>
                             <Label HorizontalAlignment="Center">Выбор метода:</Label>
-                            <ComboBox x:Name="CbInterpolationMethod" SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}">
+                            <ComboBox x:Name="CbInterpolationMethod" SelectionChanged="CbInterpolationMethod_SelectionChanged" Style="{StaticResource ResourceKey=ControlApproximation}">
                                 <ComboBoxItem>Линейная интерполяция</ComboBoxItem>
                                 <ComboBoxItem>Квадратичная интерполяция</ComboBoxItem>
                                 <ComboBoxItem>Кубический сплайн</ComboBoxItem>
@@ -112,12 +112,16 @@
                                 <ComboBoxItem>Полином Ньютона</ComboBoxItem>
                                 <ComboBoxItem>Метод наименьших квадратов</ComboBoxItem>
                             </ComboBox>
+                            <Label HorizontalAlignment="Center">Введите шаг:</Label>
+                            <xctk:DoubleUpDown x:Name="UdStepData" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
+                            <Label x:Name="LbDegreeMnk" HorizontalAlignment="Center">Введите степень:</Label>
+                            <xctk:IntegerUpDown x:Name="UdDegreeMnk" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:IntegerUpDown>
                         </StackPanel>
                     </GroupBox>
                 </Grid>
                 <Button x:Name="BtStartApproximation" HorizontalAlignment="Center" Width="170" Height="25" Click="BtStartApproximation_Click">Аппроксимировать</Button>
             </StackPanel>
         </Border>
-        <lvc:CartesianChart x:Name="Chart" Grid.Column="1"></lvc:CartesianChart>
+        <lvc:CartesianChart x:Name="Chart" Grid.Column="1" LegendLocation="Bottom"></lvc:CartesianChart>
     </Grid>
 </Window>

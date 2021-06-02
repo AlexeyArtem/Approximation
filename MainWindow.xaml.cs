@@ -75,6 +75,15 @@ namespace Approximation
 
                 GbData.Visibility = Visibility.Visible;
                 GbData.IsEnabled = true;
+
+                if (CbInterpolationMethod.SelectedIndex == 5)
+                {
+                    LbDegreeMnk.Visibility = UdDegreeMnk.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LbDegreeMnk.Visibility = UdDegreeMnk.Visibility = Visibility.Hidden;
+                }
             }
         }
 
@@ -144,6 +153,7 @@ namespace Approximation
                     scatterSeries.Values.Clear();
                     functionLine.Values.Clear();
                     Interpolation interpolation = new Interpolation(points.ToList());
+                    ApproximationFunction approximation = new ApproximationFunction(points.ToList());
                     List<Point> resPoints = new List<Point>();
 
                     try
@@ -151,16 +161,19 @@ namespace Approximation
                         switch (CbInterpolationMethod.SelectedIndex)
                         {
                             case 0:
-                                resPoints = interpolation.LinearMethod(0.01);
+                                resPoints = interpolation.LinearMethod((double)UdStepData.Value);
                                 break;
                             case 1:
-                                resPoints = interpolation.QuadraticMethod(0.01);
+                                resPoints = interpolation.QuadraticMethod((double)UdStepData.Value);
+                                break;
+                            case 5:
+                                resPoints = approximation.MethodOfMinimumRoots((int)UdDegreeMnk.Value, (double)UdStepData.Value);
                                 break;
                             case 3:
-                                resPoints = interpolation.LagrangePolynomial(0.01);
+                                resPoints = interpolation.LagrangePolynomial((double)UdStepData.Value);
                                 break;
                             case 4:
-                                resPoints = interpolation.NewtonPolynomial(0.01);
+                                resPoints = interpolation.NewtonPolynomial((double)UdStepData.Value);
                                 break;
                         }
 
@@ -205,6 +218,19 @@ namespace Approximation
                     LbArea.Visibility = UdArea.Visibility = LbAreaLimit.Visibility = UdAreaLimit.Visibility = Visibility.Visible;
                 }
             }
+            
+        }
+
+        private void CbInterpolationMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+                if (CbInterpolationMethod.SelectedIndex == 5)
+                {
+                    LbDegreeMnk.Visibility = UdDegreeMnk.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LbDegreeMnk.Visibility = UdDegreeMnk.Visibility = Visibility.Hidden;
+                }
             
         }
 

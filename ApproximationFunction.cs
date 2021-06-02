@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using NumericalMethods;
-using MathNet.Symbolics;
-using System.Security.Cryptography;
-using MathNet.Numerics;
+﻿using MathNet.Symbolics;
 using NumericalIntegration;
+using NumericalMethods;
+using System;
+using System.Collections.Generic;
+using System.Windows;
 
 namespace Approximation
 {
@@ -43,13 +38,6 @@ namespace Approximation
             varDictionary[varName] = x;
             return expression.Evaluate(varDictionary).RealValue;
         }
-
-        
-
-        //private double GetTk(int k) 
-        //{
-        //    //Откуда берутся A и B в формуле
-        //}
 
         public List<Point> MethodOfMinimumRoots(int degree, double h)
         {
@@ -261,6 +249,5 @@ namespace Approximation
             
             return resultPoints;
         }
-    }
-    
+    } 
 }
