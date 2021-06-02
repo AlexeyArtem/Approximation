@@ -42,7 +42,7 @@
                     <GroupBox x:Name="GbFunction" Header="Аппроксимация функции" Style="{StaticResource ResourceKey=GroupBoxInterface}" Grid.ColumnSpan="2" Margin="10,10,9.8,10.4">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                             <Label HorizontalAlignment="Center">Функция:</Label>
-                            <TextBox x:Name="TbFunction" Margin="0, 0, 0, 15" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>
+                            <TextBox x:Name="TbFunction" Margin="0, 0, 0, 15" Style="{StaticResource ResourceKey=ControlApproximation}">sin(x)</TextBox>
                             <Label HorizontalAlignment="Center">Выбор метода:</Label>
                             <ComboBox x:Name="CbApproximationMethod" SelectionChanged="CbApproximationMethod_SelectionChanged"  Margin="31,0,31.8,15" SelectedIndex="0" Style="{StaticResource ResourceKey=ControlApproximation}" Width="Auto">
                                 <ComboBoxItem>Полином Чебышева</ComboBoxItem>
@@ -50,9 +50,9 @@
                                 <ComboBoxItem>Ряды Тейлора</ComboBoxItem>
                             </ComboBox>
                             <Label HorizontalAlignment="Center">Степень метода:</Label>
-                            <xctk:IntegerUpDown x:Name="UdDegreeMethod" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:IntegerUpDown>
+                            <xctk:IntegerUpDown Value="1" Minimum="1" x:Name="UdDegreeMethod" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:IntegerUpDown>
                             <Label HorizontalAlignment="Center">Шаг по оси Х:</Label>
-                            <xctk:DoubleUpDown x:Name="UdStep" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
+                            <xctk:DoubleUpDown x:Name="UdStep" Value="0.01" Minimum="0.01" Increment="0.01" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
                             <Grid>
                                 <StackPanel Grid.Row="0">
                                     <Label x:Name="LbBorder" HorizontalAlignment="Center">Область посторения:</Label>
@@ -78,8 +78,6 @@
                                     <xctk:DoubleUpDown x:Name="UdAreaLimit" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
                                 </StackPanel>
                             </Grid>
-
-                            <!--<TextBox x:Name="TbDegreeMethod" Style="{StaticResource ResourceKey=ControlApproximation}"></TextBox>-->
                         </StackPanel>
                     </GroupBox>
                     <GroupBox x:Name="GbData" Header="Аппроксимация данных" Style="{StaticResource ResourceKey=GroupBoxInterface}" Grid.ColumnSpan="2" Margin="10,10,9.8,10.4">
@@ -113,9 +111,9 @@
                                 <ComboBoxItem>Метод наименьших квадратов</ComboBoxItem>
                             </ComboBox>
                             <Label HorizontalAlignment="Center">Введите шаг:</Label>
-                            <xctk:DoubleUpDown x:Name="UdStepData" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
+                            <xctk:DoubleUpDown Value="0.01" Increment="0.01" Minimum="0.01" x:Name="UdStepData" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:DoubleUpDown>
                             <Label x:Name="LbDegreeMnk" HorizontalAlignment="Center">Введите степень:</Label>
-                            <xctk:IntegerUpDown x:Name="UdDegreeMnk" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:IntegerUpDown>
+                            <xctk:IntegerUpDown Value="1" Minimum="1" x:Name="UdDegreeMnk" Style="{StaticResource ResourceKey=ControlApproximation}"></xctk:IntegerUpDown>
                         </StackPanel>
                     </GroupBox>
                 </Grid>

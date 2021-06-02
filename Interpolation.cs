@@ -37,8 +37,15 @@ namespace Approximation
             return factorial;
         }
 
+        private void CheckStep(double h) 
+        {
+            if (h <= 0) throw new Exception("Шаг приращения аргумента X не может быть меньшу нуля");
+        }
+
         public List<Point> LinearMethod(double h)
         {
+            CheckStep(h);
+
             List<Point> resultPoints = new List<Point>();
             for (int i = 0; i < points.Count; i++)
             {
@@ -57,9 +64,10 @@ namespace Approximation
 
         public List<Point> QuadraticMethod(double h)
         {
+            CheckStep(h);
             if (points.Count < 3) throw new Exception("Количество точек в заданном интервале недостаточно.");
+            
             List<Point> resultPoints = new List<Point>();
-
             for (int k = 0; k < points.Count - 2; k++)
             {
                 double[,] valuesA = new double[3, 3];
@@ -103,37 +111,11 @@ namespace Approximation
             return resultPoints;
         }
 
-        public Point QuadraticMethod(double x, int numPoint1, int numPoint2)
-        {
-            if (points.Count < 3) throw new Exception("Количество узлов интерполяции должно быть больше 2");
-
-            double[,] valuesA = new double[3, 3] { { Math.Pow(points[numPoint1].X, 2), points[numPoint1].X, 1 },
-                                                   { Math.Pow(points[numPoint2].X, 2), points[numPoint2].X, 1 },
-                                                   { Math.Pow(points[numPoint2 + 1].X, 2), points[numPoint2 + 1].X, 1 } };
-
-            double[,] valuesB = new double[3, 1] { { points[numPoint1].Y },
-                                                   { points[numPoint2].Y },
-                                                   { points[numPoint2 + 1].Y } };
-
-            Matrix A = new Matrix(valuesA);
-            Matrix B = new Matrix(valuesB);
-
-            SystemEquations systemEquations = new SystemEquations(A, B);
-            double[,] solution = systemEquations.MatrixMethod();
-
-            double a, b, c;
-            a = solution[0, 0];
-            b = solution[1, 0];
-            c = solution[2, 0];
-
-            double y = a * Math.Pow(x, 2) + b * x + c;
-            return new Point(x, y);
-        }
-
         public List<Point> LagrangePolynomial(double h)
         {
+            CheckStep(h);
+
             List<Point> resultPoints = new List<Point>();
-            
             for (double x = points[0].X; x <= points[points.Count - 1].X; x += h)
             {
                 double Lx = 0;
@@ -156,7 +138,7 @@ namespace Approximation
 
         public List<Point> NewtonPolynomial(double h)
         {
-            if (points.Count < 2) throw new Exception("Количество точек недостаточно.");
+            CheckStep(h);
 
             double step = points[1].X - points[0].X;
             for (int i = 0; i < points.Count - 1; i++)
@@ -184,51 +166,42 @@ namespace Approximation
             return resPoints;
         }
 
-        public List<Point> SplineMethod()
+        public List<Point> SplineMethod(double step)
         {
-            List<Point> newPoints = new List<Point>();
-            double h = points[1].X - points[0].X;
+            CheckStep(step);
 
             double[,] A = new double[points.Count, points.Count];
             double[,] B = new double[points.Count, 1];
-
+            double h = points[1].X - points[0].X;
             for (int i = 0; i < A.GetLength(0); i++)
             {
                 for (int j = 0; j < A.GetLength(1); j++)
                 {
                     if (i == j) A[i, j] = 4 * h / 3;
-                    else if (i == j + 1) A[i, j] = h / 3;
-                    else if (i == j - 1) A[i, j] = h / 3;
+                    else if (i == j + 1 || i == j - 1) A[i, j] = h / 3;
                 }
             }
 
             for (int i = 1; i < B.GetLength(0) - 1; i++)
-            {
                 B[i, 0] = (points[i + 1].Y - 2 * points[i].Y + points[i - 1].Y) / h;
-            }
 
             SystemEquations equations = new SystemEquations(new Matrix(A), new Matrix(B));
             double[,] C = equations.GausGordanMethod();
-            for (int i = 0; i < C.Length; i++)
-            {
-                C[i, 0] = -C[i, 0];
-            }
 
-            //newPoints.Add(new Point(points[0].X, points[0].Y));
-
+            List<Point> resultPoints = new List<Point>();
             for (int k = 1; k < points.Count - 1; k++)
             {
-                for (double x = points[k].X; x <= points[k + 1].X; x += 0.01)
+                for (double x = points[k].X; x <= points[k + 1].X; x += step)
                 {
                     double a = points[k - 1].Y;
                     double b = ((points[k].Y - points[k - 1].Y) / h) - (h / 3) * (2 * C[k, 0] + C[k + 1, 0]);
                     double d = (C[k + 1, 0] - C[k, 0]) / (3 * h);
                     double c = C[k, 0];
                     double y = a + b * (x - points[k].X) + c * Math.Pow(x - points[k].X, 2) + d * Math.Pow(x - points[k].X, 3);
-                    newPoints.Add(new Point(x, y));
+                    resultPoints.Add(new Point(x - h, y));
                 }
             }
-            return newPoints;
+            return resultPoints;
         }
     }
 }

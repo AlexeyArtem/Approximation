@@ -63,7 +63,8 @@
     <Reference Include="MathParser, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\MathosParser.2.0.0\lib\net471\MathParser.dll</HintPath>
     </Reference>
-    <Reference Include="NumericalMethodsLibrary">
+    <Reference Include="NumericalMethodsLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\NumericalMethods.1.0.6\NumericalMethodsLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />

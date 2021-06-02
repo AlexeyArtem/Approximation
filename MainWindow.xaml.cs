@@ -47,6 +47,7 @@ namespace Approximation
             Chart.Series = series;
 
             CbSelectData.SelectedIndex = 1;
+            CbInterpolationMethod.SelectedIndex = 0;
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -109,20 +110,20 @@ namespace Approximation
             //Аппроксимация функции
             if (CbSelectData.SelectedIndex == 0)
             {
-                scatterSeries.Values.Clear();
-                approximationLine.Values.Clear();
-                functionLine.Values.Clear();
-                ApproximationFunction approximation = new ApproximationFunction(TbFunction.Text);
-                List<Point> result = new List<Point>();
-                List<Point> functionValues = new List<Point>();
                 try
                 {
+                    scatterSeries.Values.Clear();
                     approximationLine.Values.Clear();
+                    functionLine.Values.Clear();
+                    ApproximationFunction approximation = new ApproximationFunction(TbFunction.Text);
+                    List<Point> result = new List<Point>();
+                    List<Point> functionValues = new List<Point>();
 
                     switch (CbApproximationMethod.SelectedIndex)
                     {
                         case 0:
                             result = approximation.ChebyshevPolynomial(Convert.ToInt32(UdDegreeMethod.Value), Convert.ToDouble(TbLeftBorder.Text), Convert.ToDouble(TbRightBorder.Text), (double)UdStep.Value);
+                            functionValues = GetPoints(Convert.ToDouble(TbLeftBorder.Text), Convert.ToDouble(TbRightBorder.Text), (double)UdStep.Value);
                             break;
                         case 1:
                             result = approximation.FourierRows(Convert.ToInt32(UdDegreeMethod.Value), Convert.ToDouble(TbLeftBorder.Text), Convert.ToDouble(TbRightBorder.Text), (double)UdStep.Value);
@@ -150,72 +151,46 @@ namespace Approximation
             {
                 if (points.Count != 0)
                 {
-                    approximationLine.Values.Clear();
-                    scatterSeries.Values.Clear();
-                    functionLine.Values.Clear();
-                    Interpolation interpolation = new Interpolation(points.ToList());
-                    ApproximationData approximation = new ApproximationData(points.ToList());
-                    List<Point> resPoints = new List<Point>();
-
-                    switch (CbInterpolationMethod.SelectedIndex)
+                    try
                     {
-                        case 0:
-                            resPoints = interpolation.LinearMethod((double)UdStepData.Value);
-                            break;
-                        case 1:
-                            resPoints = interpolation.QuadraticMethod((double)UdStepData.Value);
-                            break;
-                        case 2:
-                            resPoints = interpolation.SplineMethod();
-                            break;
-                        case 3:
-                            resPoints = interpolation.LagrangePolynomial((double)UdStepData.Value);
-                            break;
-                        case 4:
-                            resPoints = interpolation.NewtonPolynomial((double)UdStepData.Value);
-                            break;
-                        case 5:
-                            resPoints = approximation.MethodOfMinimumRoots((int)UdDegreeMnk.Value, (double)UdStepData.Value);
-                            break;
+                        approximationLine.Values.Clear();
+                        scatterSeries.Values.Clear();
+                        functionLine.Values.Clear();
+                        Interpolation interpolation = new Interpolation(points.ToList());
+                        ApproximationData approximation = new ApproximationData(points.ToList());
+                        List<Point> resPoints = new List<Point>();
+
+                        switch (CbInterpolationMethod.SelectedIndex)
+                        {
+                            case 0:
+                                resPoints = interpolation.LinearMethod((double)UdStepData.Value);
+                                break;
+                            case 1:
+                                resPoints = interpolation.QuadraticMethod((double)UdStepData.Value);
+                                break;
+                            case 2:
+                                resPoints = interpolation.SplineMethod((double)UdStepData.Value);
+                                break;
+                            case 3:
+                                resPoints = interpolation.LagrangePolynomial((double)UdStepData.Value);
+                                break;
+                            case 4:
+                                resPoints = interpolation.NewtonPolynomial((double)UdStepData.Value);
+                                break;
+                            case 5:
+                                resPoints = approximation.MethodOfMinimumRoots((int)UdDegreeMnk.Value, (double)UdStepData.Value);
+                                break;
+                        }
+
+                        foreach (Point point in resPoints)
+                            approximationLine.Values.Add(new ObservablePoint(point.X, point.Y));
+                        foreach (Point point in points)
+                            scatterSeries.Values.Add(new ObservablePoint(point.X, point.Y));
                     }
-
-                    foreach (Point point in resPoints)
-                        approximationLine.Values.Add(new ObservablePoint(point.X, point.Y));
-                    foreach (Point point in points)
-                        scatterSeries.Values.Add(new ObservablePoint(point.X, point.Y));
-                    //try
-                    //{
-                    //    switch (CbInterpolationMethod.SelectedIndex)
-                    //    {
-                    //        case 0:
-                    //            resPoints = interpolation.LinearMethod((double)UdStepData.Value);
-                    //            break;
-                    //        case 1:
-                    //            resPoints = interpolation.QuadraticMethod((double)UdStepData.Value);
-                    //            break;
-                    //        case 2:
-                    //            resPoints = interpolation.SplineMethod();
-                    //            break;
-                    //        case 3:
-                    //            resPoints = interpolation.LagrangePolynomial((double)UdStepData.Value);
-                    //            break;
-                    //        case 4:
-                    //            resPoints = interpolation.NewtonPolynomial((double)UdStepData.Value);
-                    //            break;
-                    //        case 5:
-                    //            resPoints = approximation.MethodOfMinimumRoots((int)UdDegreeMnk.Value, (double)UdStepData.Value);
-                    //            break;
-                    //    }
-
-                    //    foreach (Point point in resPoints)
-                    //        approximationLine.Values.Add(new ObservablePoint(point.X, point.Y));
-                    //    foreach (Point point in points)
-                    //        scatterSeries.Values.Add(new ObservablePoint(point.X, point.Y));
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //}
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 else MessageBox.Show("Заполните список точек", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
             }

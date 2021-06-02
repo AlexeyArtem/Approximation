@@ -1,5 +1,4 @@
 ﻿using MathNet.Symbolics;
-//using NumericalIntegration;
 using NumericalMethods;
 using System;
 using System.Collections.Generic;
@@ -104,32 +103,21 @@ namespace Approximation
 
         public List<Point> TaylorsRow(int degree, double area, double areaLimit, double step)
         {
-            if (degree > 5) throw new Exception("Степень не может быть больше 5");
-
             List<Point> resultPoints = new List<Point>();
             List<Point> values = new List<Point>();
+
             for (double i = area - areaLimit; i <= area + areaLimit; i += step)
                 values.Add(new Point(i, GetFunctionValue(i)));
 
             Derivative der = new Derivative(values);
-            List<Point> res1 = der.QuadraticInterpolation(1).DerivativePoints;
-            List<Point> res2 = der.QuadraticInterpolation(2).DerivativePoints;
-            List<Point> res3 = der.QuadraticInterpolation(3).DerivativePoints;
-            List<Point> res4 = der.QuadraticInterpolation(4).DerivativePoints;
-            List<Point> res5 = der.QuadraticInterpolation(5).DerivativePoints;
 
-            for (int i = 0; i < values.Count - 15; i++)
+            for (int i = 0; i < values.Count - 2 * degree; i++)
             {
                 double sum = 0;
-
                 for (int j = 0; j <= degree; j++)
                 {
                     if (j == 0) sum = values[i].Y;
-                    if (j == 1) sum += res1[i].Y;
-                    if (j == 2) sum += res2[i].Y;
-                    if (j == 3) sum += res3[i].Y;
-                    if (j == 4) sum += res4[i].Y;
-                    if (j == 5) sum += res5[i].Y;
+                    else sum += der.QuadraticInterpolation(j).DerivativePoints[i].Y;
                 }
                 resultPoints.Add(new Point(values[i].X, sum));
             }
