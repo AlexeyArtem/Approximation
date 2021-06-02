@@ -183,5 +183,52 @@ namespace Approximation
 
             return resPoints;
         }
+
+        public List<Point> SplineMethod()
+        {
+            List<Point> newPoints = new List<Point>();
+            double h = points[1].X - points[0].X;
+
+            double[,] A = new double[points.Count, points.Count];
+            double[,] B = new double[points.Count, 1];
+
+            for (int i = 0; i < A.GetLength(0); i++)
+            {
+                for (int j = 0; j < A.GetLength(1); j++)
+                {
+                    if (i == j) A[i, j] = 4 * h / 3;
+                    else if (i == j + 1) A[i, j] = h / 3;
+                    else if (i == j - 1) A[i, j] = h / 3;
+                }
+            }
+
+            for (int i = 1; i < B.GetLength(0) - 1; i++)
+            {
+                B[i, 0] = (points[i + 1].Y - 2 * points[i].Y + points[i - 1].Y) / h;
+            }
+
+            SystemEquations equations = new SystemEquations(new Matrix(A), new Matrix(B));
+            double[,] C = equations.GausGordanMethod();
+            for (int i = 0; i < C.Length; i++)
+            {
+                C[i, 0] = -C[i, 0];
+            }
+
+            //newPoints.Add(new Point(points[0].X, points[0].Y));
+
+            for (int k = 1; k < points.Count - 1; k++)
+            {
+                for (double x = points[k].X; x <= points[k + 1].X; x += 0.01)
+                {
+                    double a = points[k - 1].Y;
+                    double b = ((points[k].Y - points[k - 1].Y) / h) - (h / 3) * (2 * C[k, 0] + C[k + 1, 0]);
+                    double d = (C[k + 1, 0] - C[k, 0]) / (3 * h);
+                    double c = C[k, 0];
+                    double y = a + b * (x - points[k].X) + c * Math.Pow(x - points[k].X, 2) + d * Math.Pow(x - points[k].X, 3);
+                    newPoints.Add(new Point(x, y));
+                }
+            }
+            return newPoints;
+        }
     }
 }

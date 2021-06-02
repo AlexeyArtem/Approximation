@@ -1,5 +1,5 @@
 ﻿using MathNet.Symbolics;
-using NumericalIntegration;
+//using NumericalIntegration;
 using NumericalMethods;
 using System;
 using System.Collections.Generic;
@@ -7,113 +7,26 @@ using System.Windows;
 
 namespace Approximation
 {
-
     public class ApproximationFunction
     {
         private static string varName = "x";
         private Dictionary<string, FloatingPoint> varDictionary;
         private SymbolicExpression expression;
-        private List<Point> points;
+        private string function;
 
-        public ApproximationFunction(List<Point> points)
-        {
-            this.points = points;
-        }
 
         public ApproximationFunction(string function) 
         {
             expression = SymbolicExpression.Parse(function);
             varDictionary = new Dictionary<string, FloatingPoint>();
             varDictionary.Add(varName, 0);
-            points = new List<Point>();
-
-            for (double i = 0; i < 100; i += 0.1)
-            {
-                points.Add(new Point(i, GetFunctionValue(i)));
-            }
+            this.function = function;
         }
 
         private double GetFunctionValue(double x) 
         {
             varDictionary[varName] = x;
             return expression.Evaluate(varDictionary).RealValue;
-        }
-
-        public List<Point> MethodOfMinimumRoots(int degree, double h)
-        {
-            List<Point> resultPoints = new List<Point>();
-            // XA=Y
-            double[,] coefficients; // A
-            double[,] arguments = new double[points.Count, degree + 1]; // X
-            double[,] values = new double[points.Count, 1]; // Y
-
-            for (int i = 0; i < arguments.GetLength(0); i++)
-            {
-                for (int j = 0; j < arguments.GetLength(1); j++)
-                {
-                    arguments[i, j] = Math.Pow(points[i].X, j);
-                }
-            }
-
-            for (int i = 0; i < values.GetLength(0); i++)
-            {
-                for (int j = 0; j < values.GetLength(1); j++)
-                {
-                    values[i, j] = points[i].Y;
-                }
-            }
-;
-
-            Matrix argumentsMatrix = new Matrix(arguments);
-            Matrix valuesMatrix = new Matrix(values);
-
-            Matrix first = (argumentsMatrix.GetTransporse() * argumentsMatrix).GetInverse();
-            Matrix second = argumentsMatrix.GetTransporse() * valuesMatrix;
-            Matrix A = first * second;
-
-            for (double x = points[0].X; x <= points[points.Count - 1].X; x += 0.1)
-            {
-                double y = 0;
-                for (int i = 0; i <= degree; i++)
-                {
-                    y += A[i, 0] * Math.Pow(x, i);
-                }
-                resultPoints.Add(new Point(x, y));
-            }
-
-
-            //SystemEquations systemEquations1 = new SystemEquations(argumentsMatrix, valuesMatrix);
-
-            //double[,] result = systemEquations1.MatrixMethod();
-
-            //for (double x = points[0].X; x <= points[points.Count - 1].X; x += 1)
-            //{
-            //    double y = 0;
-            //    for (int i = 0; i <= degree; i++)
-            //    {
-            //        y += result[i, 0] * Math.Pow(x, i);
-            //    }
-            //    resultPoints.Add(new Point(x, y));
-            //}
-            return resultPoints;
-            //A=(Xt*X)^-1*Xt*Y
-
-            //Matrix temp = argumentsMatrix.GetTransporse();
-            //Matrix temp1 = temp * argumentsMatrix;
-            //Matrix temp2 = temp1.GetInverse();
-
-            //Matrix temp3 = temp2 * argumentsMatrix.GetTransporse();
-            //Matrix temp4 = temp3 * valuesMatrix;
-
-
-            //SystemEquations systemEquations = new SystemEquations(argumentsMatrix.GetTransporse() * argumentsMatrix, argumentsMatrix.GetTransporse() * valuesMatrix);
-            //double[,] result = systemEquations.MatrixMethod();
-
-            double step = 0.1;
-            //List<Point> result;
-
-
-            return points;
         }
 
         private double GetTi(double xK, double i)
@@ -224,7 +137,7 @@ namespace Approximation
             return resultPoints;
         }
 
-        public List<Point> FourierRows(string function, int degree, double leftBorder, double rightBorder, double step)
+        public List<Point> FourierRows(int degree, double leftBorder, double rightBorder, double step)
         {
             List<Point> resultPoints = new List<Point>();
             
